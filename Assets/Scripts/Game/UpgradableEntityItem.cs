@@ -46,7 +46,6 @@ public class UpgradableEntityItem
         var upgradeDetails = upgradeManager.GetUpgradeDetails(Id, CurrentTier);
         if (upgradeDetails != null)
         {
-            // Here, you can update the item's properties, e.g., damage
             upgradableObject = upgradeDetails;
             Debug.Log($"Item {Id} upgraded to Tier {CurrentTier} with Damage: {upgradeDetails.damage}");
         }
