@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7883313322105328031
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1111553393221334364}
+  - component: {fileID: 3123395476947638014}
+  m_Layer: 0
+  m_Name: RemoteConfig
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1111553393221334364
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7883313322105328031}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3123395476947638014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7883313322105328031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d790692543dba4e89bb00da096bb4323, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _url: https://script.googleusercontent.com/a/macros/madboxgames.io/echo?user_content_key=Z82f0hrqV7bgVC8DiXsuX3oqGzyCBOijGiYcFCSQ5_NraJruJms0XSqRUCMkG2pgnfOW1KrMyBySdgNVwPenWjYR4978vumJOJmA1Yb3SEsKFZqtv3DaNYcMrmhZHmUMi80zadyHLKAdSBGm42ZUreX2RafVlPHmubd_SaoYEJHhyiC4YqEwWq5rf8iB1kkATRgv46bjOD80SifTSynrk-HNv3lIkPiMbfP384Ns_zc29DeXwpv9S0IJd93iJjCDA5aElAIPmnzc_ScPTHfLrg&lib=M5YioJdcbZ146fiZV43VHb_-qERZM9JSA
+  remoteConfig:
+    entities: []
+    list: 
