@@ -33,6 +33,10 @@ public class Hud : MonoBehaviour
     public TextMeshProUGUI PlayerDoubleDamageIndicator;
     public TextMeshProUGUI EnemyDoubleDamageIndicator;
 
+    [Space(15)]
+    public TextMeshProUGUI PlayerUpgradeTierText;
+    public TextMeshProUGUI EnemyUpgradeTierText;
+
     private void Awake()
     {
         GameManager.OnConfigLoaded += OnGameConfigLoaded;
@@ -48,6 +52,9 @@ public class Hud : MonoBehaviour
 
         PlayerSpawner.OnDoubleDamageUpdated += UpdatePlayerIndicator;
         EnemySpawner.OnDoubleDamageUpdated += UpdateEnemyIndicator;
+
+        PlayerSpawner.OnTierUpdated += DisplayPlayerUpgradeTier;
+        EnemySpawner.OnTierUpdated += DisplayEnemyUpgradeTier;
     }
 
     private void StartGameButtonListener()
@@ -78,5 +85,14 @@ public class Hud : MonoBehaviour
     private void UpdateEnemyIndicator(bool value)
     {
         EnemyDoubleDamageIndicator.gameObject.SetActive(value);
+    }
+
+    private void DisplayPlayerUpgradeTier(int tier)
+    {
+        PlayerUpgradeTierText.text = "upgrade tier:" + tier;
+    }
+    private void DisplayEnemyUpgradeTier(int tier)
+    {
+        EnemyUpgradeTierText.text = "upgrade tier:" + tier;
     }
 }

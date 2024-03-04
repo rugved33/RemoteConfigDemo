@@ -12,12 +12,13 @@ public class TroopSpawner : MonoBehaviour
     public float radius = 2f;
     public UnityAction<int, int> OnTroopUpdated;
     public UnityAction<bool> OnDoubleDamageUpdated;
-    [SerializeField] private LayerMask _layerMask;
+    public UnityAction<int> OnTierUpdated;
     private TroopInfo _currentTroopInfo;
     private int _maxTroopAmount;
     private int _troopAmount = 0;
     private int _attackDamage;
     private bool _enableDoubleDamage;
+    private int _currentUpgradeTier;
     private UpgradableEntityItem _troopUpgradableItem;
     private List<CharacterBehaviour> _troops = new List<CharacterBehaviour>();
 
@@ -93,6 +94,7 @@ public class TroopSpawner : MonoBehaviour
         {
             _attackDamage = upgradableObject.damage;
             _enableDoubleDamage = upgradableObject.enableDoubleDamage;
+            _currentUpgradeTier = upgradableObject.tier;
 
             for (int i = _troops.Count - 1; i >= 0; i--)
             {
@@ -100,6 +102,7 @@ public class TroopSpawner : MonoBehaviour
                 _troops[i].EnableDoubleDamage = _enableDoubleDamage;
             }
 
+            OnTierUpdated?.Invoke(_currentUpgradeTier);
             OnDoubleDamageUpdated?.Invoke(_enableDoubleDamage);
         }
     }
