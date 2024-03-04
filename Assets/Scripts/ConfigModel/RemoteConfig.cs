@@ -7,7 +7,6 @@ namespace ConfigModel
     {
         public List<Entity> entities;
         public Dictionary<string, object> global = new Dictionary<string, object>();
-        public List<int> list;
     }
 }
 
