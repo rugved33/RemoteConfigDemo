@@ -7,14 +7,14 @@ public class HealthSystem : MonoBehaviour
     private int _maxHp;
     private int _currentHp;
     public UnityAction<int, int> OnHealthChange;
-    public UnityAction KillEvent;
+    public UnityAction OnDeadEvent;
 
     private void Awake()
     {
         if (_healthBar != null)
         {
             OnHealthChange += _healthBar.UpdateHealthBar;
-            KillEvent += _healthBar.DisableBar;
+            OnDeadEvent += _healthBar.DisableBar;
         }
     }
     public void SetHealth(int health)
@@ -38,7 +38,7 @@ public class HealthSystem : MonoBehaviour
         if (_currentHp <= 0)
         {
             _currentHp = 0;
-            KillEvent?.Invoke();
+            OnDeadEvent?.Invoke();
         }
         OnHealthChange?.Invoke(_currentHp, _maxHp);
     }

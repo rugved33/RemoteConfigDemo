@@ -7,13 +7,13 @@ public class UpgradableEntityItem
     public string Id { get; private set; }
     public int CurrentTier { get; private set; }
     public int MaxTier { get; private set; }
-    private UpgradeManager upgradeManager;
+    private UpgradeManager _upgradeManager;
 
     public UpgradableEntityItem(string id, int initialTier, UpgradeManager manager)
     {
         Id = id;
         CurrentTier = initialTier;
-        upgradeManager = manager;
+        _upgradeManager = manager;
     }
 
     public void Upgrade(out UpgradableObject upgradableObject)
@@ -23,7 +23,7 @@ public class UpgradableEntityItem
         if (canUpgrade)
         {
             CurrentTier++;
-            var upgradeDetails = upgradeManager.GetUpgradeDetails(Id, CurrentTier);
+            var upgradeDetails = _upgradeManager.GetUpgradeDetails(Id, CurrentTier);
             if (upgradeDetails != null)
             {
                 upgradableObject = upgradeDetails;
@@ -43,7 +43,7 @@ public class UpgradableEntityItem
     {
         upgradableObject = null;
 
-        var upgradeDetails = upgradeManager.GetUpgradeDetails(Id, CurrentTier);
+        var upgradeDetails = _upgradeManager.GetUpgradeDetails(Id, CurrentTier);
         if (upgradeDetails != null)
         {
             upgradableObject = upgradeDetails;
@@ -57,6 +57,6 @@ public class UpgradableEntityItem
 
     public (bool canUpgrade, int currentTier, int maxTier) CanUpgrade()
     {
-        return upgradeManager.CanUpgradeItem(Id, CurrentTier);
+        return _upgradeManager.CanUpgradeItem(Id, CurrentTier);
     }
 }

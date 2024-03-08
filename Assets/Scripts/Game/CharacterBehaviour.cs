@@ -83,7 +83,7 @@ public abstract class CharacterBehaviour : MonoBehaviour
     public virtual void Awake()
     {
         _healthSystem.SetHealth(_settings.MaxHp);
-        _healthSystem.KillEvent += Kill;
+        _healthSystem.OnDeadEvent += Kill;
     }
 
     protected bool CanAttack()

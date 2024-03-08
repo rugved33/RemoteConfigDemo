@@ -7,8 +7,8 @@ using ConfigModel;
 public class UpgradeManager : MonoBehaviour
 {
     public static UpgradeManager Instance;
-    private Dictionary<string, List<UpgradableListItem>> allEntitiesWithUpgrades = new Dictionary<string, List<UpgradableListItem>>();
-    public Dictionary<string, List<UpgradableListItem>> AllEntities => allEntitiesWithUpgrades;
+    private Dictionary<string, List<UpgradableListItem>> _allEntitiesWithUpgrades = new Dictionary<string, List<UpgradableListItem>>();
+    public Dictionary<string, List<UpgradableListItem>> AllEntities => _allEntitiesWithUpgrades;
 
     private void Awake()
     {
@@ -26,11 +26,11 @@ public class UpgradeManager : MonoBehaviour
 
     private void OnLoaded()
     {
-        allEntitiesWithUpgrades = GameManager.Instance.GetAllEntitiesWithUpgradableItems();
+        _allEntitiesWithUpgrades = GameManager.Instance.GetAllEntitiesWithUpgradableItems();
 
-        if (allEntitiesWithUpgrades != null)
+        if (_allEntitiesWithUpgrades != null)
         {
-            foreach (var entityEntry in allEntitiesWithUpgrades)
+            foreach (var entityEntry in _allEntitiesWithUpgrades)
             {
                 string entityId = entityEntry.Key;
                 List<UpgradableListItem> upgradableItems = entityEntry.Value;

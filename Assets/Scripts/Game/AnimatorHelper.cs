@@ -65,20 +65,19 @@ public class AnimatorHelper : MonoBehaviour
         }
     }
 
-    [SerializeField] private bool m_continueAnimationOnEnable = true;
-    [SerializeField] private bool m_turnOnAnimatorOnEnable = true;
+    [SerializeField] private bool _continueAnimationOnEnable = true;
+    [SerializeField] private bool _turnOnAnimatorOnEnable = true;
 
-    [SerializeField] private Animator m_animator;
-    [SerializeField, ReadOnly] private List<AnimationHelperState> m_animStates = new List<AnimationHelperState>();
-    private Dictionary<int, LayerData> m_animatorLayerDatas = new Dictionary<int, LayerData>();
-
-    private List<int> m_activeKeys = new List<int>();
+    [SerializeField] private Animator animator;
+    [SerializeField, ReadOnly] private List<AnimationHelperState> _animStates = new List<AnimationHelperState>();
+    private Dictionary<int, LayerData> _animatorLayerDatas = new Dictionary<int, LayerData>();
+    private List<int> _activeKeys = new List<int>();
 
     private void Awake()
     {
-        if (m_animator == null)
+        if (animator == null)
         {
-            m_animator = GetComponent<Animator>();
+            animator = GetComponent<Animator>();
         }
     }
 
@@ -86,48 +85,48 @@ public class AnimatorHelper : MonoBehaviour
     {
 
         // automatically switch the animator on incase it accidentally gets turned off in the editor and then checked in.
-        if (m_animator != null)
+        if (animator != null)
         {
-            m_animator.enabled = m_turnOnAnimatorOnEnable;
+            animator.enabled = _turnOnAnimatorOnEnable;
 
-            foreach (int layer in m_animatorLayerDatas.Keys)
+            foreach (int layer in _animatorLayerDatas.Keys)
             {
-                AnimationHelperState activeState = m_animatorLayerDatas[layer].activeAnimationState
-                                                   ?? m_animatorLayerDatas[layer].nextAnimationState;
-                if (activeState != null && m_continueAnimationOnEnable)
+                AnimationHelperState activeState = _animatorLayerDatas[layer].activeAnimationState
+                                                   ?? _animatorLayerDatas[layer].nextAnimationState;
+                if (activeState != null && _continueAnimationOnEnable)
                 {
-                    m_animator.Play(activeState.animationName, layer, m_animatorLayerDatas[layer].currentlClipTime);
+                    animator.Play(activeState.animationName, layer, _animatorLayerDatas[layer].currentlClipTime);
 
                 }
             }
         }
-        m_animator.enabled = true;
+        animator.enabled = true;
     }
 
     private void OnApplicationFocus()
     {
-        if (m_animator != null)
+        if (animator != null)
         {
-            m_animator.enabled = true;
+            animator.enabled = true;
         }
     }
 
     private void OnDisable()
     {
-        if (m_animator != null)
+        if (animator != null)
         {
-            m_animator.enabled = false;
+            animator.enabled = false;
         }
     }
 
     public List<AnimationHelperState> GetAnimationList()
     {
-        return m_animStates;
+        return _animStates;
     }
 
     public void SetStates(List<string> allStates)
     {
-        m_animStates.Clear();
+        _animStates.Clear();
         if (allStates == null)
         {
             return;
@@ -139,25 +138,25 @@ public class AnimatorHelper : MonoBehaviour
             state.animationName = allStates[i];
             state.GetAnimNameHash();
 
-            m_animStates.Add(state);
+            _animStates.Add(state);
         }
     }
 
-    public IList<AnimationHelperState> AnimStates => m_animStates;
+    public IList<AnimationHelperState> AnimStates => _animStates;
 
     public void SetAnimator(Animator animator)
     {
-        m_animator = animator;
+        this.animator = animator;
     }
 
     public Animator GetAnimator()
     {
-        return m_animator;
+        return animator;
     }
 
     public void ChangeAnimaState(int index, string animationName)
     {
-        AnimationHelperState animState = m_animStates[index];
+        AnimationHelperState animState = _animStates[index];
         animState.animationName = animationName;
         animState.animationNameHash = -1;
     }
@@ -180,27 +179,27 @@ public class AnimatorHelper : MonoBehaviour
         Animator anim = GetAnimator();
         AnimatorStateInfo animInfo = anim.GetCurrentAnimatorStateInfo(layer);
 
-        if (m_animatorLayerDatas.ContainsKey(layer))
+        if (_animatorLayerDatas.ContainsKey(layer))
         {
-            m_animatorLayerDatas[layer] = newData;
+            _animatorLayerDatas[layer] = newData;
         }
         else
         {
-            m_animatorLayerDatas.Add(layer, newData);
+            _animatorLayerDatas.Add(layer, newData);
         }
 
-        if (!m_activeKeys.Contains(layer))
+        if (!_activeKeys.Contains(layer))
         {
-            m_activeKeys.Add(layer);
+            _activeKeys.Add(layer);
         }
 
         if (crossfade > 0.0f)
         {
-            m_animator.CrossFade(state.animationName, crossfade, layer, 0f);
+            animator.CrossFade(state.animationName, crossfade, layer, 0f);
         }
         else
         {
-            m_animator.Play(state.animationName, layer, startTime);
+            animator.Play(state.animationName, layer, startTime);
         }
     }
 
@@ -214,12 +213,12 @@ public class AnimatorHelper : MonoBehaviour
 
     private bool ShouldUpdateAnimState()
     {
-        return m_animator != null;
+        return animator != null;
     }
 
     public void Play(string animationName, Action onFinished = null, float startTime = 0f, bool checkIsPlayingFirst = false, float crossFade = 0f, int layer = 0)
     {
-        if (!m_animator.enabled)
+        if (!animator.enabled)
         {
 
         }
@@ -246,7 +245,7 @@ public class AnimatorHelper : MonoBehaviour
                 if (animState != null)
                 {
 
-                    if (m_animator.HasState(layer, Animator.StringToHash(animationName)))
+                    if (animator.HasState(layer, Animator.StringToHash(animationName)))
                     {
                         PlayAnimationInternal(animState, onFinished, startTime, crossFade, layer);
                     }
@@ -265,14 +264,14 @@ public class AnimatorHelper : MonoBehaviour
 
     private void AnimationFinished(int layer)
     {
-        if (m_animatorLayerDatas.ContainsKey(layer) && m_activeKeys.Contains(layer))
+        if (_animatorLayerDatas.ContainsKey(layer) && _activeKeys.Contains(layer))
         {
-            m_activeKeys.Remove(layer);
+            _activeKeys.Remove(layer);
 
-            System.Action action = m_animatorLayerDatas[layer].animationCompleteCallback;
+            System.Action action = _animatorLayerDatas[layer].animationCompleteCallback;
             if (action != null)
             {
-                m_animatorLayerDatas[layer].animationCompleteCallback = null;
+                _animatorLayerDatas[layer].animationCompleteCallback = null;
                 action();
             }
         }
@@ -285,7 +284,7 @@ public class AnimatorHelper : MonoBehaviour
 
     private AnimationHelperState GetAnimStateFromAnimationName(string animationName)
     {
-        foreach (AnimationHelperState animState in m_animStates)
+        foreach (AnimationHelperState animState in _animStates)
         {
             if (animState.animationName == animationName)
             {
@@ -298,7 +297,7 @@ public class AnimatorHelper : MonoBehaviour
 
     private AnimationHelperState GetAnimStateFromAnimationNameHash(int animationNameHash)
     {
-        foreach (AnimationHelperState animState in m_animStates)
+        foreach (AnimationHelperState animState in _animStates)
         {
             if (animState.GetAnimNameHash() == animationNameHash)
             {
@@ -311,25 +310,25 @@ public class AnimatorHelper : MonoBehaviour
 
     private void UpdateAnimState()
     {
-        int numKeys = m_activeKeys.Count;
+        int numKeys = _activeKeys.Count;
         for (int i = 0; i < numKeys; i++)
         {
-            if (i >= m_activeKeys.Count)
+            if (i >= _activeKeys.Count)
             {
                 continue;
             }
 
-            int layer = m_activeKeys[i];
-            AnimatorStateInfo layerStateInfo = m_animator.GetCurrentAnimatorStateInfo(layer);
-            m_animatorLayerDatas[layer].currentlClipTime = layerStateInfo.normalizedTime;
+            int layer = _activeKeys[i];
+            AnimatorStateInfo layerStateInfo = animator.GetCurrentAnimatorStateInfo(layer);
+            _animatorLayerDatas[layer].currentlClipTime = layerStateInfo.normalizedTime;
 
-            AnimationHelperState nextState = m_animatorLayerDatas[layer].nextAnimationState;
+            AnimationHelperState nextState = _animatorLayerDatas[layer].nextAnimationState;
 
             if (nextState != null)
             {
                 if (layerStateInfo.shortNameHash == nextState.GetAnimNameHash())
                 {
-                    m_animatorLayerDatas[layer].SetupNewActiveState(nextState);
+                    _animatorLayerDatas[layer].SetupNewActiveState(nextState);
                 }
             }
             else
@@ -349,7 +348,7 @@ public class AnimatorHelper : MonoBehaviour
     {
         int animStateShortNameHash = stateInfo.shortNameHash;
 
-        AnimationHelperState activeStateOnLayer = m_animatorLayerDatas[layer].activeAnimationState;
+        AnimationHelperState activeStateOnLayer = _animatorLayerDatas[layer].activeAnimationState;
         int currentAnimStateShortNameHash = activeStateOnLayer != null ? activeStateOnLayer.GetAnimNameHash() : -1;
 
         if (animStateShortNameHash != currentAnimStateShortNameHash)
@@ -357,7 +356,7 @@ public class AnimatorHelper : MonoBehaviour
             AnimationHelperState helperState = GetAnimStateFromAnimationNameHash(animStateShortNameHash);
             if (helperState != null)
             {
-                m_animatorLayerDatas[layer].SetupNewActiveState(helperState);
+                _animatorLayerDatas[layer].SetupNewActiveState(helperState);
             }
         }
     }
@@ -365,17 +364,17 @@ public class AnimatorHelper : MonoBehaviour
     private bool UpdateAnimFinished(AnimatorStateInfo stateInfo, int layer)
     {
         int animStateShortNameHash = stateInfo.shortNameHash;
-        AnimationHelperState activeStateOnLayer = m_animatorLayerDatas[layer].activeAnimationState;
+        AnimationHelperState activeStateOnLayer = _animatorLayerDatas[layer].activeAnimationState;
         int currentAnimStateShortNameHash = activeStateOnLayer != null ? activeStateOnLayer.GetAnimNameHash() : -1;
 
-        if (!m_animatorLayerDatas[layer].animationFinished)
+        if (!_animatorLayerDatas[layer].animationFinished)
         {
-            AnimatorClipInfo[] animClipInfos = m_animator.GetCurrentAnimatorClipInfo(layer);
+            AnimatorClipInfo[] animClipInfos = animator.GetCurrentAnimatorClipInfo(layer);
             bool animClipHasFrames = animClipInfos.Length > 0 && animClipInfos[0].clip.length <= Mathf.Epsilon;
 
-            if (stateInfo.normalizedTime >= 1f  || animStateShortNameHash != currentAnimStateShortNameHash || animClipHasFrames)
+            if (stateInfo.normalizedTime >= 1f || animStateShortNameHash != currentAnimStateShortNameHash || animClipHasFrames)
             {
-                m_animatorLayerDatas[layer].animationFinished = true;
+                _animatorLayerDatas[layer].animationFinished = true;
                 AnimationFinished(layer);
                 return true;
             }
@@ -387,12 +386,12 @@ public class AnimatorHelper : MonoBehaviour
     public AnimatorControllerParameter[] GetAnimatorParameters()
     {
 #if UNITY_EDITOR
-        if (m_animator == null)
+        if (animator == null)
         {
             return null;
         }
 
-        UnityEditor.Animations.AnimatorController editorAnimatorController = m_animator.runtimeAnimatorController as UnityEditor.Animations.AnimatorController;
+        UnityEditor.Animations.AnimatorController editorAnimatorController = animator.runtimeAnimatorController as UnityEditor.Animations.AnimatorController;
         if (editorAnimatorController != null)
         {
             return editorAnimatorController.parameters;
@@ -404,9 +403,9 @@ public class AnimatorHelper : MonoBehaviour
     //Helper functions
     public string GetCurrentStateName(int layer = 0)
     {
-        if (m_animatorLayerDatas.ContainsKey(layer))
+        if (_animatorLayerDatas.ContainsKey(layer))
         {
-            AnimationHelperState activeState = m_animatorLayerDatas[layer].activeAnimationState;
+            AnimationHelperState activeState = _animatorLayerDatas[layer].activeAnimationState;
             if (activeState != null)
             {
                 return activeState.animationName;
@@ -418,56 +417,56 @@ public class AnimatorHelper : MonoBehaviour
 
     public float GetCurrentStateNormalisedTime(int layer = 0)
     {
-        AnimatorStateInfo stateInfo = m_animator.GetCurrentAnimatorStateInfo(layer);
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(layer);
         return stateInfo.normalizedTime;
     }
 
     public void SetAnimatorSpeed(float speed)
     {
-        m_animator.speed = speed;
+        animator.speed = speed;
     }
 
     public void StopAnimator()
     {
-        m_animator.enabled = false;
+        animator.enabled = false;
     }
 
-//Params
-#region  Paramaters
+    //Params
+    #region  Paramaters
     public void SetBool(string key, bool value)
     {
-        if (m_animator == null)
+        if (animator == null)
         {
             return;
         }
-        m_animator.SetBool(key, value);
+        animator.SetBool(key, value);
     }
 
     public void SetInt(string key, int value)
     {
-        if (m_animator == null)
+        if (animator == null)
         {
             return;
         }
-        m_animator.SetInteger(key, value);
+        animator.SetInteger(key, value);
     }
 
     public void SetFloat(string key, float value)
     {
-        if (m_animator == null)
+        if (animator == null)
         {
             return;
         }
-        m_animator.SetFloat(key, value);
+        animator.SetFloat(key, value);
     }
 
     public void SetTrigger(string key)
     {
-        if (m_animator == null)
+        if (animator == null)
         {
             return;
         }
-        m_animator.SetTrigger(key);
+        animator.SetTrigger(key);
     }
-#endregion
+    #endregion
 }
