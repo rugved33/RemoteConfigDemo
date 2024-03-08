@@ -79,9 +79,6 @@ namespace GoogleSheetConfig
 #if UNITY_EDITOR
 
             SaveUpdatedJsonToResources(jsonContent);
-
-            string streamingAssetsPath = Path.Combine(Application.streamingAssetsPath, REMOTE_CONFIG_JSON_FILE_NAME);
-            File.WriteAllText(streamingAssetsPath, jsonContent);
 #endif
 
             File.WriteAllText(filePath, jsonContent);
