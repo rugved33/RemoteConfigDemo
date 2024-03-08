@@ -147,62 +147,39 @@ public abstract class CharacterBehaviour : MonoBehaviour
 
     protected void FindEnemyTarget()
     {
-        float closestDistance = Mathf.Infinity;
+        var closestDistance = Mathf.Infinity;
 
-        if (_currentTarget == null || IsPrimaryTarget())
+        if (_currentTarget != null && !IsPrimaryTarget())
         {
-            foreach (CharacterBehaviour potentialTarget in this._secondaryEnemies)
+            return;
+        }
+
+        void UpdateClosestTarget(List<CharacterBehaviour> potentialTargets)
+        {
+            foreach (var potentialTarget in potentialTargets)
             {
-                if (Vector3.Distance(transform.position, potentialTarget.gameObject.transform.position) < closestDistance
-                    && potentialTarget.IsAlive
-                    && TeamType != potentialTarget.TeamType)
+                float distance = Vector3.Distance(transform.position, potentialTarget.gameObject.transform.position);
+                if (distance < closestDistance && potentialTarget.IsAlive && TeamType != potentialTarget.TeamType)
                 {
-                    if (TeamType != potentialTarget.TeamType)
-                    {
-                        closestDistance = Vector3.Distance(transform.position, potentialTarget.gameObject.transform.position);
-                        _currentTarget = potentialTarget;
-                    }
+                    closestDistance = distance;
+                    _currentTarget = potentialTarget;
                 }
             }
         }
 
-        for (int i = _secondaryEnemies.Count - 1; i >= 0; i--)
+        UpdateClosestTarget(_secondaryEnemies);
+
+
+        if (_secondaryEnemies.Count == 0 || _currentTarget == null)
         {
-            if (!_secondaryEnemies[i].isActiveAndEnabled)
-            {
-                if (this._secondaryEnemies.Contains(_secondaryEnemies[i]))
-                {
-                    this._secondaryEnemies.Remove(_secondaryEnemies[i]);
-                }
-            }
+            UpdateClosestTarget(_primaryEnemies);
         }
 
-        try
-        {
-            if (this._secondaryEnemies.Count <= 0)
-            {
-                foreach (CharacterBehaviour potentialTarget in _primaryEnemies)
-                {
-                    if (Vector3.Distance(transform.position, potentialTarget.gameObject.transform.position) < closestDistance
-                        && potentialTarget.IsAlive
-                        && TeamType != potentialTarget.TeamType)
-                    {
-                        closestDistance = Vector3.Distance(transform.position, potentialTarget.gameObject.transform.position);
-                        _currentTarget = potentialTarget;
-
-                    }
-                }
-            }
-        }
-        catch (Exception exception)
-        {
-            Debug.Log("<color=red> Exception </color>" + exception);
-        }
-        RemoveTargetFromList();
+        RemoveRedundantTargets();
     }
 
 
-    protected void RemoveTargetFromList()
+    protected void RemoveRedundantTargets()
     {
         if (_currentTarget != null)
         {

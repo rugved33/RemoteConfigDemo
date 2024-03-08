@@ -24,10 +24,10 @@ public class HealthBar : MonoBehaviour
         }
 
         if (gameObject.activeInHierarchy)
-            StartCoroutine(Co_healthBar(rate));
+            StartCoroutine(Co_UpdateHealthBar(rate));
     }
 
-    private IEnumerator Co_healthBar(float rate)
+    private IEnumerator Co_UpdateHealthBar(float rate)
     {
         yield return new WaitForSeconds(0.3f);
         _bg.fillAmount = rate;
