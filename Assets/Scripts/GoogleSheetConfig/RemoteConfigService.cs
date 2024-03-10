@@ -12,15 +12,15 @@ namespace GoogleSheetConfig
         private const string REMOTE_CONFIG_FALLBACK_FILE_NAME = "remote_config_fallback";
 
         public TConfig ConfigData;
-        public string ResponseString;
         public delegate void ConfigLoadedCallback();
         public event ConfigLoadedCallback OnConfigLoaded;
-        private static readonly HttpClient httpClient = new HttpClient();
-        private string url;
+        private static readonly HttpClient _httpClient = new HttpClient();
+        private string _url;
+        private static string _lastFetchedJson;
 
         public async Task Initialize(string url)
         {
-            this.url = url;
+            this._url = url;
             await FetchConfig();
         }
 
@@ -28,11 +28,11 @@ namespace GoogleSheetConfig
         {
             try
             {
-                string responseString = await httpClient.GetStringAsync(url);
+                string responseString = await _httpClient.GetStringAsync(_url);
                 ConfigData = JsonConvert.DeserializeObject<TConfig>(responseString);
                 SaveConfigToFileObject(ConfigData);
                 OnConfigLoaded?.Invoke();
-                ResponseString = responseString;
+                _lastFetchedJson = responseString;
             }
             catch (HttpRequestException e)
             {
@@ -48,7 +48,7 @@ namespace GoogleSheetConfig
             if (File.Exists(filePath))
             {
                 string savedJson = File.ReadAllText(filePath);
-                ResponseString = savedJson;
+                _lastFetchedJson = savedJson;
                 ConfigData = JsonConvert.DeserializeObject<TConfig>(savedJson);
                 OnConfigLoaded?.Invoke();
                 Debug.Log("Loaded from local save path.");
@@ -59,7 +59,7 @@ namespace GoogleSheetConfig
 
                 if (jsonResource != null)
                 {
-                    ResponseString = jsonResource.text;
+                    _lastFetchedJson = jsonResource.text;
                     ConfigData = JsonConvert.DeserializeObject<TConfig>(jsonResource.text);
                     OnConfigLoaded?.Invoke();
                     Debug.Log("Loaded from resources folder.");
@@ -94,6 +94,27 @@ namespace GoogleSheetConfig
             Debug.Log("Saved updated JSON to Resources for Editor fallback.");
         }
 #endif
+
+        public static T GetConfig<T>() where T : class, new()
+        {
+            if (!string.IsNullOrEmpty(_lastFetchedJson))
+            {
+                try
+                {
+                    T config = JsonConvert.DeserializeObject<T>(_lastFetchedJson);
+                    if (config != null)
+                    {
+                        return config;
+                    }
+                }
+                catch (JsonException e)
+                {
+                    Debug.LogError($"Error deserializing config to type {typeof(T)}: {e.Message}");
+                }
+            }
+
+            return new T();
+        }
 
     }
 }
