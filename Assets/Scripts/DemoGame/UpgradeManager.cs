@@ -6,7 +6,7 @@ using ConfigModel;
 
 namespace DemoGame
 {
-    public class UpgradeManager : MonoBehaviour
+    public class UpgradeManager
     {
         private Dictionary<string, List<UpgradableListItem>> _allEntitiesWithUpgrades = new Dictionary<string, List<UpgradableListItem>>();
         public Dictionary<string, List<UpgradableListItem>> AllEntities => _allEntitiesWithUpgrades;
