@@ -23,6 +23,7 @@ namespace DemoGame
         private int _currentUpgradeTier;
         private UpgradableEntityItem _troopUpgradableItem;
         private List<CharacterBehaviour> _troops = new List<CharacterBehaviour>();
+        private UpgradeManager _upgradeManager = new();
 
         private void Awake()
         {
@@ -33,13 +34,13 @@ namespace DemoGame
                     _currentTroopInfo = troopInfoSO.troopsConfig[i];
                 }
             }
-
+            _upgradeManager.Initialize();
             GameManager.OnConfigLoaded += OnRemoteConfigLoaded;
         }
 
         private void OnRemoteConfigLoaded()
         {
-            _troopUpgradableItem = new UpgradableEntityItem(_currentTroopInfo.settingsID, 1, UpgradeManager.Instance);
+            _troopUpgradableItem = new UpgradableEntityItem(_currentTroopInfo.settingsID, 1, _upgradeManager);
             _maxTroopAmount = (int)GameManager.Instance.GetGlobalValue<Int64>(_currentTroopInfo.maxTroopID);
 
             OnTroopUpdated?.Invoke(_troopAmount, _maxTroopAmount);

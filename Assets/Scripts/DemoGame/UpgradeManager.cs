@@ -8,21 +8,11 @@ namespace DemoGame
 {
     public class UpgradeManager : MonoBehaviour
     {
-        public static UpgradeManager Instance;
         private Dictionary<string, List<UpgradableListItem>> _allEntitiesWithUpgrades = new Dictionary<string, List<UpgradableListItem>>();
         public Dictionary<string, List<UpgradableListItem>> AllEntities => _allEntitiesWithUpgrades;
 
-        private void Awake()
+        public void Initialize()
         {
-            if (Instance == null)
-            {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-            else if (Instance != this)
-            {
-                Destroy(gameObject);
-            }
             GameManager.RemoteConfig.OnConfigLoaded += OnLoaded;
         }
 
